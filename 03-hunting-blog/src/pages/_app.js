@@ -1,5 +1,7 @@
 // import "@/styles/globals.css";
 import "bootstrap/dist/css/bootstrap.css";
+ 
+
 import "../styles/main.scss";
 import { AuthProvider } from "@/context/authContext";
 import { Toaster } from "react-hot-toast";

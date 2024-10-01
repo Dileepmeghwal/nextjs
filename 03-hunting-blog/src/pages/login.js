@@ -19,7 +19,7 @@ const Login = () => {
   };
   const [state, setState] = useState(initialStates);
   const [loading, setLoading] = useState(false);
-  const [showMsg, setShowMsg] = useState(null);
+  const [showMsg, setShowMsg] = useState("");
   const [errors, setErrors] = useState({
     email: "",
     password: "",
@@ -67,26 +67,22 @@ const Login = () => {
         Apicalling.apiCallPost("auth/login", state).then((response) => {
           setLoading(false);
           console.log("resp", response);
-          if (response.status === 201) {
-            setShowMsg("");
+          if (response.status !== 201) {
+            setShowMsg("Unable to login with provided credentials");
+            toast.error("Unable to login with provided credentials");
+          } else {
+            // setShowMsg("");
             login(response?.data?.access_token);
             toast.success("Logged in Successfull");
             setTimeout(() => {
               router.push("/");
             }, 2000);
           }
-
-          if (response?.response?.data?.status === 401) {
-            alert("Unauthorised person");
-          }
         });
       } catch (error) {
-        if (response?.data?.status === 401) {
-          alert("Unauthorised person");
-        }
         console.log("ERROR", error);
-        setShowMsg(error?.response?.data?.message);
-        toast.error("This didn't work.");
+        setShowMsg("something went wrong");
+        
       }
     }
   };
@@ -133,12 +129,13 @@ const Login = () => {
               )}
             </Button>
             <span>
-              I haven't account ? <Link href="/login">Sign Up</Link>
+              I haven't account ? <Link href="/register">Sign Up</Link>
             </span>
           </form>
+          <span>{showMsg.length > 0  && showMsg}</span>
         </div>
 
-        <p style={{ color: "yellow" }}>{showMsg}</p>
+        {/* {showMsg.length > 0 && <p style={{ color: "yellow" }}>{showMsg}</p>} */}
       </div>
     </div>
   );

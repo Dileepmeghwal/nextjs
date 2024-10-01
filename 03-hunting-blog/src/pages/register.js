@@ -71,6 +71,7 @@ const Register = () => {
           setLoading(false);
           if (res.status === 201) {
             clear();
+            router.push('/login')
           }
         });
       } catch (error) {

@@ -6,21 +6,41 @@ import { supabase } from "../../supabase";
 import { useEffect, useState } from "react";
 import { useAuth } from "@/context/authContext";
 import { useRouter } from "next/router";
+import { Cloudinary } from "@cloudinary/url-gen";
+import { auto } from "@cloudinary/url-gen/actions/resize";
+import { autoGravity } from "@cloudinary/url-gen/qualifiers/gravity";
+import Search from "@/components/Search";
+import { useSearchParams } from "next/navigation";
+import Header from "@/components/Header";
+import { IoIosCart } from "react-icons/io";
+import Apicalling from "@/Api/Apicalling";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export default function Home({ blogdata }) {
+export default function Home({ products }) {
+  const [productList, setProductsList] = useState(products);
+  const [filterItems, setFilteredItems] = useState(products);
+  console.log("DATA", products);
   const router = useRouter();
   const { accessToken } = useAuth();
-  console.log("accessToken,", accessToken);
+  console.log("List", productList);
+  const [search, setSearch] = useState("");
+  const [page, setPage] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+  const limit = 10;
 
-  // useEffect(() => {
-  //   if (accessToken !== null) {
-  //     router.replace("/");
-  //   } else {
-  //     router.push("/login");
-  //   }
-  // }, []);
+  const handleSearch = (e) => {
+    const text = e.target.value;
+    console.log(text);
+    setSearch(text);
+    if (!search) {
+      setFilteredItems(products);
+    }
+    const filter = productList.filter((item) =>
+      item.title.toLowerCase().includes(text.toLowerCase())
+    );
+    setFilteredItems(filter);
+  };
   return (
     <>
       <Head>
@@ -29,19 +49,47 @@ export default function Home({ blogdata }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className={`${styles.main} ${inter.className}`}>
-        <h3>Welcome!</h3>
+      {/* <main className={`${styles.main} ${inter.className}`}> */}
+      <Header onSearch={handleSearch} value={search} />
+      <main>
+        <div className="row">
+          {filterItems?.map((item) => (
+            <div className="col-lg-3">
+              <div class="card" key={item.id}>
+                <img
+                  class="card-img-top"
+                  src={item?.images[0]}
+                  alt="Card image cap"
+                />
+                <div class="card-body">
+                  <h5 class="card-title">{item.title}</h5>
+                  <p class="card-text">
+                    Some quick example text to build on the card title and make
+                    up the bulk of the card's content.
+                  </p>
+                  <a href="#" class="btn btn-primary">
+                    Add <IoIosCart />
+                  </a>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </main>
+      {/* </main> */}
     </>
   );
 }
 
-// Home.getInitialProps = async () => {
-//   const { data, error } = await supabase.from("blog_posts").select("*");
-
-//   if (error) {
-//     console.log(error)
-//     throw error;
-//   }
-//   return { blogdata: data };
-// };
+Home.getInitialProps = async () => {
+  try {
+    const offset = page * limit;
+    const response = await Apicalling.apiCallGet(
+      `products?offset=${offset}&limit=${limit}`
+    );
+    const data = await response.data;
+    return { products: data };
+  } catch (error) {
+    console.error("ERROR", error);
+  }
+};
