@@ -5,9 +5,7 @@ import "@/styles/globals.css";
 export default function App({ Component, pageProps }) {
   return (
     <Layout>
-      <div className=" text-primary bg-secondary border-b-3 border-black">
-        <Header />
-      </div>
+      <Header />
       <Component {...pageProps} />
     </Layout>
   );

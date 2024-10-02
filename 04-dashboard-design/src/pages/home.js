@@ -1,11 +1,10 @@
 import React from "react";
+import { LineChart } from "@mui/x-charts";
+import { BarChart } from "@mui/x-charts/BarChart";
 
 const Home = () => {
   return (
-    <div className="p-4 px-5">
-      <h1 className="text-2xl font-bold">Dashboard</h1>
-      <p>Welcome to the dashboard!</p>
-    </div>
+   <h1>Home</h1>
   );
 };
 

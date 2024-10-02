@@ -14,6 +14,8 @@ import {
   FileChartColumnIncreasing,
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
+import Logo from "../../assets/logoipsum-245.svg";
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -38,44 +40,56 @@ const Sidebar = () => {
   };
 
   const menuItems = [
-    { title: "Dashboard", link: "home", icon: <LayoutGrid /> },
-    { title: "Profile", link: "profile", icon: <UserPen /> },
+    { title: "Dashboard", link: "/", icon: <LayoutGrid /> },
+
+    { title: "Activity", link: "home", icon: <NotebookTabs /> },
     {
-      title: "Settings",
+      title: "Products",
       link: "#",
       icon: <Settings />,
       submenu: [
-        { title: "General", link: "#" },
-        { title: "Security", link: "#" },
+        { title: "General", link: "home" },
+        { title: "Security", link: "home" },
+      ],
+    },
+    {
+      title: "Categories",
+      link: "home",
+      icon: <Settings />,
+      submenu: [
+        { title: "Accessories", link: "home" },
+        { title: "Technology", link: "home" },
+        { title: "Fashion", link: "home" },
       ],
     },
     {
       title: "Reports",
-      link: "#",
+      link: "home",
       icon: <FileChartColumnIncreasing />,
       submenu: [
-        { title: "Daily Reports", link: "#" },
-        { title: "Monthly Reports", link: "#" },
+        { title: "Daily Reports", link: "home" },
+        { title: "Monthly Reports", link: "home" },
       ],
     },
-    { title: "Billing", link: "#", icon: <FileText /> },
-    { title: "Attendance", link: "#", icon: <CalendarDays /> },
-    { title: "Invoices", link: "#", icon: <NotebookTabs /> },
-    { title: "Paupee", link: "#", icon: <CreditCard /> },
+    { title: "Order", link: "home", icon: <FileText /> },
+    { title: "Documentaton", link: "home", icon: <CalendarDays /> },
   ];
 
   return (
     <div
-      className={`h-screen text-white duration-300 relative border-r-[1px] border-greyColor ${
-        isOpen ? "w-16" : "w-72"
+      className={`h-screen dark:bg-surface-300   duration-300 relative border-r-[1px] border-secondary dark:border-surface-400 ${
+        isOpen ? "w-20" : "w-72"
       }`}
     >
       <div className="flex py-2  align-middle justify-between items-center mx-2 mt-2">
         <h4 className="font-extrabold text-[20px] text-black px-3">
-          {!isOpen ? "Xdfk" : ""}
+          <Image src={Logo} />
         </h4>
         <div>
-          <button className=" text-black outline-none" onClick={toggleSidebar}>
+          <button
+            className=" text-black outline-none dark:text-white"
+            onClick={toggleSidebar}
+          >
             {isOpen ? (
               <PanelRightClose className="absolute" />
             ) : (
@@ -88,13 +102,15 @@ const Sidebar = () => {
       <nav className="mt-5">
         <ul className="">
           {menuItems.map((item, index) => (
-            <li key={index} className="mb-5 px-3 relative group">
+            <li key={index} className="mb-5  px-3 relative group ">
               {item.submenu ? (
                 <>
                   <div
                     role="button"
-                    className={`flex items-center justify-between w-full p-2 rounded text-black font-medium hover:bg-primary hover:text-white ${
-                      active === index ? "bg-primary text-white" : ""
+                    className={`flex  items-center dark:text-white text-[15px] justify-between w-full  px-4 py-3  rounded-lg text-black font-medium hover:bg-primary dark:hover:bg-surface-400  hover:text-white ${
+                      active === index
+                        ? "bg-primary dark:bg-surface-400 text-white"
+                        : ""
                     }`}
                     onClick={() => toggleSubmenu(index)}
                   >
@@ -109,20 +125,19 @@ const Sidebar = () => {
                     )}
                   </div>
 
-                  {/* Submenu handling for both collapsed and expanded sidebar */}
                   {activeSubmenuIndex === index && (
                     <ul
                       className={`${
                         isOpen
-                          ? "absolute left-16 top-0 bg-white py-3 px-2 shadow-lg rounded-md  w-max group-hover:block hidden"
-                          : "ml-4 m-2 p-2 "
+                          ? "absolute    left-16 top-0 dark:bg-white  py-3 px-2 shadow-lg rounded-md  w-max group-hover:block hidden"
+                          : "ml-7 py-2 "
                       }`}
                     >
                       {item.submenu.map((subItem, subIndex) => (
                         <li key={subIndex} className="">
                           <Link
                             href={subItem.link}
-                            className={`block text-sm rounded-lg text-black font-medium hover:text-blue-600 ${
+                            className={`block my-4    duration-300 text-[15px]    text-black font-medium hover:text-blue-600  ${
                               active === subIndex ? "text-primary" : ""
                             }`}
                           >
@@ -134,16 +149,18 @@ const Sidebar = () => {
                   )}
                 </>
               ) : (
-                <a
+                <Link
                   href={item.link}
                   onClick={() => handleSelected(index)}
-                  className={`flex gap-2 p-2 rounded text-black font-medium hover:bg-primary hover:text-white ${
-                    active === index ? "bg-primary text-white" : ""
+                  className={`flex items-center gap-2 px-4   py-3 text-[15px] dark:text-white rounded-lg text-black font-medium hover:bg-primary hover:text-white dark:hover:bg-surface-400 ${
+                    active === index
+                      ? "bg-primary dark:bg-surface-400 text-white"
+                      : ""
                   }`}
                 >
                   <i className="text-[10px]">{item.icon}</i>
                   {!isOpen && item.title}
-                </a>
+                </Link>
               )}
             </li>
           ))}
